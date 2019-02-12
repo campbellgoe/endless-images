@@ -2,7 +2,8 @@
   text-align: center;
 }
 .App-header {
-  background-color: #282c34;
+  background: rgb(28,33,38);
+  background: linear-gradient(0deg, rgba(28,33,38,1) 50%, rgba(49,53,62,1) 100%);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -18,6 +19,23 @@
 
 .image-article {
   background-color: rgb(240,240,240);
-  border-radius: 20px;
   margin: 0 auto;
+}
+#thanks {
+  position: absolute;
+  bottom: 0;
+  right: 1em;
+  color: white;
+}
+a:link {
+  color: rgb(115, 207, 255);
+}
+a:visited {
+  color: #ca80d6;
+}
+a:hover {
+  color: rgb(172, 231, 255);
+}
+a:active {
+  color: rgb(255, 142, 142);
 }
