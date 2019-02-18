@@ -22,7 +22,13 @@
   width: 50vw;
   height: 50vw;
   margin: 3px auto;
-  position: relative;
+}
+@media only screen and (max-width: 540px) {
+  .image-article {
+    width: 100%;
+    height: 100%;
+    min-height: 100vw;
+  }
 }
 #thanks {
   position: absolute;
@@ -33,6 +39,7 @@
 img {
   background-color: #d4d4d4;
   width: 100%;
+  height: auto;
 }
 .caret-down {
   width: 64px;

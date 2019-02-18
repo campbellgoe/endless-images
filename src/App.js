@@ -67,26 +67,29 @@ class Image extends Component {
           this.props.isInView(inView);
           return (<article
             className="image-article"
-            style={this.props.style}
             ref={ref}>
             {
               this.state.loaded ?
-              null : 
-              <img src={
+              null :
+              <div style={{position: "relative"}}>
+                <img src={
                   loadingIcon
                 }
                 alt="Loading..."
                 className="loading-icon"
               />
+            </div>
             }
             <img
               src={
                 imgSrc
               }
               onError={(ev)=>{
+                console.log("on error");
                 ev.target.src = this.getSrc(Math.floor(Math.random()*99999));
               }}
-              onLoad={()=>{
+              onLoad={(ev)=>{
+                console.log("on load", ev.target, window.scrollY);
                 this.setState({
                   loaded: true
                 })
@@ -100,9 +103,8 @@ class Image extends Component {
   }
 }
 function easeInOutQuad(t) {
-  return t<.5 ? 2*t*t : -1+(4-2*t)*t;
+  return t < 0.5 ? 2*t*t : -1+(4-2*t)*t;
 };
-
 class App extends Component {
   constructor(){
     super();
@@ -110,6 +112,8 @@ class App extends Component {
     this.width = window.innerWidth;
     this.height = window.innerHeight;
     this.imageSizeMultiplier = 0.5;//half screen width
+    this.lastScrollY = window.scrollY;
+    this.restrictScroll = false;
     this.state = {
       size: Math.floor(this.width*this.imageSizeMultiplier)
     }
@@ -120,11 +124,32 @@ class App extends Component {
 
   }
   componentDidMount(){
-
+    window.addEventListener("scroll", ()=>this.onScroll());
     window.addEventListener("resize", ()=>this.onResize());
   }
   componentWillUnmount(){
+    window.removeEventListener("scroll", ()=>this.onScroll());
     window.removeEventListener("resize", ()=>this.onResize());
+  }
+  onScroll(){
+    //had to implement this hack because when images loaded after the scroll
+    //animation from clicking the caret, it would flick to 0 scrollY.
+    if(this.restrictScroll){
+      const scrollYDiff = window.scrollY-this.lastScrollY;
+      //console.log("scroll diff:", scrollYDiff);
+      if(scrollYDiff !== 0 && Math.abs(scrollYDiff) < window.innerHeight*0.5){
+        //console.log("no longer restricting because", Math.abs(scrollYDiff), "is less than", window.innerHeight*0.);
+        this.restrictScroll = false;
+      }
+      if(scrollYDiff < 0 && Math.abs(scrollYDiff) >= window.innerHeight*0.6){
+        //scroll back to previous value
+        window.scrollBy(0, -scrollYDiff);
+        //console.log("scrolled back to original position");
+      } else {
+        //console.log("didn't scroll back because either ",scrollYDiff," is >= 0 or because ",Math.abs(scrollYDiff)," is < ", );
+      }
+    }
+    this.lastScrollY = window.scrollY;
   }
   onResize(){
     //resize images to fit nicely on the screen
@@ -172,16 +197,18 @@ class App extends Component {
           alt="go down"
           className="caret-down"
           onClick={()=>{
+            const startY = window.scrollY;
             const targetY = this.height;
             let frame = 0;
-            const totalFrames = 48;
-            function loop(){
+            const totalFrames = 4;//Math.ceil((targetY-startY)/this.height*48);
+            const loop = () => {
               const t = easeInOutQuad(frame/totalFrames);
               if(t < 1){
-                window.scrollTo(0, targetY*t);
+                document.documentElement.scrollTop = Math.round(startY+(targetY-startY)*t);
                 requestAnimationFrame(loop);
               } else {
                 console.log("stopped");
+                this.restrictScroll = true;
               }
               frame ++;
             }
