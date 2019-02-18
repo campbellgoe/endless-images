@@ -71,14 +71,12 @@ class Image extends Component {
             {
               this.state.loaded ?
               null :
-              <div style={{position: "relative"}}>
-                <img src={
-                  loadingIcon
-                }
-                alt="Loading..."
-                className="loading-icon"
-              />
-            </div>
+              <img src={
+                loadingIcon
+              }
+              alt="Loading..."
+              className="loading-icon"
+            />
             }
             <img
               src={
