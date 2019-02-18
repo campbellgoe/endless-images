@@ -200,7 +200,7 @@ class App extends Component {
             const startY = window.scrollY;
             const targetY = this.height;
             let frame = 0;
-            const totalFrames = 4;//Math.ceil((targetY-startY)/this.height*48);
+            const totalFrames = 48;//Math.ceil((targetY-startY)/this.height*48);
             const loop = () => {
               const t = easeInOutQuad(frame/totalFrames);
               if(t < 1){
