@@ -68,17 +68,8 @@ class Image extends Component {
           return (<article
             className="image-article"
             ref={ref}>
-            {
-              this.state.loaded ?
-              null :
-              <img src={
-                loadingIcon
-              }
-              alt="Loading..."
-              className="loading-icon"
-            />
-            }
             <img
+              className="image-random"
               src={
                 imgSrc
               }
@@ -94,6 +85,16 @@ class Image extends Component {
               }}
               alt="random"
               />
+              {
+                this.state.loaded ?
+                null :
+                <img src={
+                  loadingIcon
+                }
+                alt="Loading..."
+                className="loading-icon"
+              />
+              }
           </article>);
         }}
       </InView>

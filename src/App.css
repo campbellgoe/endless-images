@@ -24,6 +24,9 @@
   margin: 3px auto;
   position: relative;
 }
+.image-random {
+  z-index: 100;
+}
 @media only screen and (max-width: 540px) {
   .image-article {
     width: 100%;
