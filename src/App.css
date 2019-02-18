@@ -19,13 +19,37 @@
 
 .image-article {
   background-color: rgb(240,240,240);
-  margin: 0 auto;
+  width: 50vw;
+  height: 50vw;
+  margin: 3px auto;
+  position: relative;
 }
 #thanks {
   position: absolute;
   bottom: 0;
   right: 1em;
   color: white;
+}
+img {
+  background-color: #d4d4d4;
+  width: 100%;
+}
+.caret-down {
+  width: 64px;
+  position: absolute;
+  left: calc(50% - 32px);
+  bottom: 33%;
+  background-color: transparent;
+  cursor: pointer;
+}
+.loading-icon {
+  width: 14%;
+  background-color: transparent;
+  min-width: 48px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
 }
 a:link {
   color: rgb(115, 207, 255);
