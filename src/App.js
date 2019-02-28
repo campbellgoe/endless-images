@@ -162,7 +162,7 @@ class App extends Component {
     return (<Image
       key={"img-"+id}
       numberId={id}
-      size={size}
+      size={Math.max(size, 540)}
       seed={this.seed}
       isInView={(inView)=>{
         if(inView && id >= this.state.lastId-2){
