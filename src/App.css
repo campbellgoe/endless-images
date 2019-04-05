@@ -45,6 +45,23 @@ img {
   width: 100%;
   height: auto;
 }
+.word-image {
+  width: initial;
+}
+h2 {
+  margin: 2em;
+}
+.word-item {
+  background-color: #f9f9f9;
+  border: 1px solid #e8dbbe;
+  padding-bottom: 2em;
+  margin-bottom: 2em;
+}
+.word-images-container {
+  display: flex;
+  justify-content: space-evenly;
+  flex-direction: row;
+}
 .caret-down {
   width: 64px;
   position: absolute;

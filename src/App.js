@@ -3,6 +3,59 @@ import { InView } from 'react-intersection-observer';
 import './App.css';
 import caretDownImage from './caret-down.svg';
 import loadingIcon from './loading.gif';
+import words from './words-images.json';
+class WordCard extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      loaded: []
+    }
+  }
+  render(){
+    const { word, images } = this.props.wordItem;
+    return <InView>
+      {({ inView, ref }) => {
+        this.props.isInView(inView);
+        return (
+          <article ref={ref} className="word-item">
+            <h2>{word.toUpperCase()}</h2>
+            <div className="word-images-container">
+              {images.map((src, index) => {
+                return (
+                  <React.Fragment
+                    key={"word-"+word+"-img-"+index}
+                    >
+                    <img
+                      className="word-image"
+                      src={src}
+                      alt={word}
+                      onLoad={(ev)=>{
+                        this.setState({
+                          loaded: [...this.state.loaded, index]
+                        })
+                      }}
+                      />
+                    {
+                      this.state.loaded.indexOf(index) === -1 ?
+                      <img
+                        src={
+                          loadingIcon
+                        }
+                        alt="Loading..."
+                        className="loading-icon"
+                      />
+                      : null
+                    }
+                  </React.Fragment>
+                );
+              })}
+            </div>
+          </article>
+        );
+      }}
+    </InView>
+  }
+}
 class Image extends Component {
   constructor(props){
     super(props);
@@ -117,7 +170,7 @@ class App extends Component {
       size: Math.floor(this.width*this.imageSizeMultiplier)
     }
     this.state = { ...this.state,
-      images: this.createImages(0, 3),//3 images starting at index 0
+      images: this.createWordCards(0, 3),//3 images starting at index 0
       lastId: 2,//of indexes 0,1,2 - 2 is the last index
     }
 
@@ -157,6 +210,31 @@ class App extends Component {
     this.setState({
       size: Math.floor(this.width*this.imageSizeMultiplier)
     })
+  }
+  createWordCard(index){
+    return <WordCard
+      key={words[index].word+"-"+index}
+      wordItem={words[index]}
+      isInView={(inView)=>{
+        if(inView && index >= this.state.lastId-2){
+          let newImages = [...this.state.images, ...this.createWordCards(this.state.lastId+1, 3)];
+          //fetch n
+          this.setState({
+            images: newImages,
+            lastId: this.state.lastId+3
+          })
+        }
+      }}
+      />
+  }
+  createWordCards(startId, n){
+    let images = [];
+    for(let i=0;i < n;i++){
+      const id = i+startId;
+      let Image = this.createWordCard(id);
+      images.push({id, Image});
+    }
+    return images;
   }
   createImage(id, size){
     return (<Image
