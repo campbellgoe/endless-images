@@ -212,6 +212,7 @@ class App extends Component {
     })
   }
   createWordCard(index){
+    if(!words[index]) return this.createImage(index, window.innerWidth*0.5);
     return <WordCard
       key={words[index].word+"-"+index}
       wordItem={words[index]}
