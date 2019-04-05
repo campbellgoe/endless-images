@@ -47,9 +47,16 @@ img {
 }
 .word-image {
   width: initial;
+  margin: 0.5em;
+  align-self: center;
+  max-width: 100%;
 }
 h2 {
   margin: 2em;
+  background: rgb(255,255,255);
+  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 46%, rgba(255,255,255,1) 54%, rgba(255,255,255,0) 100%);
+  position: sticky;
+  top: 0;
 }
 .word-item {
   background-color: #f9f9f9;
@@ -61,6 +68,7 @@ h2 {
   display: flex;
   justify-content: space-evenly;
   flex-direction: row;
+  flex-wrap: wrap;
 }
 .caret-down {
   width: 64px;
