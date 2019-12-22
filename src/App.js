@@ -1,16 +1,16 @@
-import React, { Component } from 'react';
-import { InView } from 'react-intersection-observer';
-import './App.css';
-import caretDownImage from './caret-down.svg';
-import loadingIcon from './loading.gif';
+import React, { Component } from "react";
+import { InView } from "react-intersection-observer";
+import "./App.css";
+import caretDownImage from "./caret-down.svg";
+import loadingIcon from "./loading.gif";
 class Image extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {
       loaded: false
-    }
+    };
   }
-  getSrc(seed){
+  getSrc(seed) {
     //search terms for the second random image generator (after the first 1080 images).
     //many possible words couldn't be used because the loremflickr image generator was unable to generate a random image
     //and will tend to generate the metal cat statue on a curb image instead.
@@ -51,96 +51,104 @@ class Image extends Component {
       "bird",
       "castle",
       "flower"
-      ];
-      const word = words[Math.floor(Math.random()*words.length)];
-      //seed is just the starting index, so you get a different set of random images each time.
-      //numberId is incremented so you get a unique id each time, although this doesn't apply to loremflicker since that just requires a unique query to get a random image
-    return this.props.numberId >= 1080 ?
-    `https://loremflickr.com/${this.props.size}/${this.props.size}/${word}?random=${seed+(new Date().getTime())}`
-    : `https://picsum.photos/${this.props.size}/${this.props.size}/?image=${(seed+this.props.numberId)%1080}`;
+    ];
+    const word = words[Math.floor(Math.random() * words.length)];
+    //seed is just the starting index, so you get a different set of random images each time.
+    //numberId is incremented so you get a unique id each time, although this doesn't apply to loremflicker since that just requires a unique query to get a random image
+    return this.props.numberId >= 1080
+      ? `https://loremflickr.com/${this.props.size}/${
+          this.props.size
+        }/${word}?random=${seed + new Date().getTime()}`
+      : `https://picsum.photos/${this.props.size}/${
+          this.props.size
+        }/?image=${(seed + this.props.numberId) % 1080}`;
   }
-  render(){
+  render() {
     const imgSrc = this.getSrc(this.props.seed);
     return (
       <InView>
         {({ inView, ref }) => {
           this.props.isInView(inView);
-          return (<article
-            className="image-article"
-            ref={ref}>
-            <img
-              className="image-random"
-              src={
-                imgSrc
-              }
-              onError={(ev)=>{
-                console.log("on error");
-                ev.target.src = this.getSrc(Math.floor(Math.random()*99999));
-              }}
-              onLoad={(ev)=>{
-                console.log("on load", ev.target, window.scrollY);
-                this.setState({
-                  loaded: true
-                })
-              }}
-              alt="random"
+          return (
+            <article className="image-article" ref={ref}>
+              <img
+                className="image-random"
+                src={imgSrc}
+                loading="lazy"
+                onError={ev => {
+                  console.log("on error");
+                  ev.target.src = this.getSrc(
+                    Math.floor(Math.random() * 99999)
+                  );
+                }}
+                onLoad={ev => {
+                  console.log("on load", ev.target, window.scrollY);
+                  this.setState({
+                    loaded: true
+                  });
+                }}
+                alt="random"
               />
-              {
-                this.state.loaded ?
-                null :
-                <img src={
-                  loadingIcon
-                }
-                alt="Loading..."
-                className="loading-icon"
-              />
-              }
-          </article>);
+              {this.state.loaded ? null : (
+                <img
+                  src={loadingIcon}
+                  alt="Loading..."
+                  className="loading-icon"
+                />
+              )}
+            </article>
+          );
         }}
       </InView>
     );
   }
 }
 function easeInOutQuad(t) {
-  return t < 0.5 ? 2*t*t : -1+(4-2*t)*t;
-};
+  return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+}
 class App extends Component {
-  constructor(){
+  constructor() {
     super();
-    this.seed = Math.floor(Math.random()*10000);
+    this.seed = Math.floor(Math.random() * 10000);
     this.width = window.innerWidth;
     this.height = window.innerHeight;
-    this.imageSizeMultiplier = 0.5;//half screen width
+    this.imageSizeMultiplier = 0.5; //half screen width
     this.lastScrollY = window.scrollY;
     this.restrictScroll = false;
     this.state = {
-      size: Math.floor(this.width*this.imageSizeMultiplier)
-    }
-    this.state = { ...this.state,
-      images: this.createImages(0, 3),//3 images starting at index 0
-      lastId: 2,//of indexes 0,1,2 - 2 is the last index
-    }
-
+      size: Math.floor(this.width * this.imageSizeMultiplier)
+    };
+    this.state = {
+      ...this.state,
+      images: this.createImages(0, 3), //3 images starting at index 0
+      lastId: 2 //of indexes 0,1,2 - 2 is the last index
+    };
   }
-  componentDidMount(){
-    window.addEventListener("scroll", ()=>this.onScroll());
-    window.addEventListener("resize", ()=>this.onResize());
+  componentDidMount() {
+    window.addEventListener("scroll", () => this.onScroll());
+    window.addEventListener("resize", () => this.onResize());
   }
-  componentWillUnmount(){
-    window.removeEventListener("scroll", ()=>this.onScroll());
-    window.removeEventListener("resize", ()=>this.onResize());
+  componentWillUnmount() {
+    window.removeEventListener("scroll", () => this.onScroll());
+    window.removeEventListener("resize", () => this.onResize());
   }
-  onScroll(){
+  onScroll() {
     //had to implement this hack because when images loaded after the scroll
     //animation from clicking the caret, it would flick to 0 scrollY.
-    if(this.restrictScroll){
-      const scrollYDiff = window.scrollY-this.lastScrollY;
+    if (this.restrictScroll) {
+      const scrollYDiff = window.scrollY - this.lastScrollY;
       //console.log("scroll diff:", scrollYDiff);
-      if(scrollYDiff !== 0 && Math.abs(scrollYDiff) < window.innerHeight*0.5){
+      if (
+        scrollYDiff !== 0 &&
+        Math.abs(scrollYDiff) < window.innerHeight * 0.5
+      ) {
         //console.log("no longer restricting because", Math.abs(scrollYDiff), "is less than", window.innerHeight*0.);
         this.restrictScroll = false;
       }
-      if(scrollYDiff < 0 && Math.abs(scrollYDiff) >= window.innerHeight*0.6){
+      if (
+        scrollYDiff < 0 &&
+        Math.abs(scrollYDiff) >= window.innerHeight * 0.6
+      ) {
         //scroll back to previous value
         window.scrollBy(0, -scrollYDiff);
         //console.log("scrolled back to original position");
@@ -150,72 +158,95 @@ class App extends Component {
     }
     this.lastScrollY = window.scrollY;
   }
-  onResize(){
+  onResize() {
     //resize images to fit nicely on the screen
     this.width = window.innerWidth;
     this.height = window.innerHeight;
     this.setState({
-      size: Math.floor(this.width*this.imageSizeMultiplier)
-    })
+      size: Math.floor(this.width * this.imageSizeMultiplier)
+    });
   }
-  createImage(id, size){
-    return (<Image
-      key={"img-"+id}
-      numberId={id}
-      size={Math.max(size, 540)}
-      seed={this.seed}
-      isInView={(inView)=>{
-        if(inView && id >= this.state.lastId-2){
-          let newImages = [...this.state.images, ...this.createImages(this.state.lastId+1, 3)];
-          //fetch n
-          this.setState({
-            images: newImages,
-            lastId: this.state.lastId+3
-          })
-        }
-      }}
-        />);
+  createImage(id, size) {
+    return (
+      <Image
+        key={"img-" + id}
+        numberId={id}
+        size={Math.max(size, 540)}
+        seed={this.seed}
+        isInView={inView => {
+          if (inView && id >= this.state.lastId - 2) {
+            let newImages = [
+              ...this.state.images,
+              ...this.createImages(this.state.lastId + 1, 3)
+            ];
+            //fetch n
+            this.setState({
+              images: newImages,
+              lastId: this.state.lastId + 3
+            });
+          }
+        }}
+      />
+    );
   }
-  createImages(startId, n){
+  createImages(startId, n) {
     let images = [];
-    for(let i=0;i < n;i++){
-      const id = i+startId;
+    for (let i = 0; i < n; i++) {
+      const id = i + startId;
       let Image = this.createImage(id, this.state.size);
-      images.push({id, Image});
+      images.push({ id, Image });
     }
     return images;
   }
   render() {
     return (
       <div className="App">
-        <header className="App-header">
-          Welcome to Endless
-        </header>
+        <header className="App-header">Welcome to Endless</header>
         <img
           src={caretDownImage}
           alt="go down"
           className="caret-down"
-          onClick={()=>{
+          onClick={() => {
             const startY = window.scrollY;
             const targetY = this.height;
             let frame = 0;
-            const totalFrames = 48;//Math.ceil((targetY-startY)/this.height*48);
+            const totalFrames = 48; //Math.ceil((targetY-startY)/this.height*48);
             const loop = () => {
-              const t = easeInOutQuad(frame/totalFrames);
-              if(t < 1){
-                document.documentElement.scrollTop = Math.round(startY+(targetY-startY)*t);
+              const t = easeInOutQuad(frame / totalFrames);
+              if (t < 1) {
+                document.documentElement.scrollTop = Math.round(
+                  startY + (targetY - startY) * t
+                );
                 requestAnimationFrame(loop);
               } else {
                 console.log("stopped");
                 this.restrictScroll = true;
               }
-              frame ++;
-            }
+              frame++;
+            };
             loop();
           }}
         />
-        <p id="thanks">Images thanks to <a href="https://picsum.photos" target="_blank" rel="noopener noreferrer">Lorem Picsum</a> and <a href="https://loremflickr.com/" target="_blank" rel="noopener noreferrer">LoremFlickr</a>.</p>
-        {this.state.images.map(({Image})=>Image)}
+        <p id="thanks">
+          Images thanks to{" "}
+          <a
+            href="https://picsum.photos"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Lorem Picsum
+          </a>{" "}
+          and{" "}
+          <a
+            href="https://loremflickr.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            LoremFlickr
+          </a>
+          .
+        </p>
+        {this.state.images.map(({ Image }) => Image)}
       </div>
     );
   }
