@@ -76,13 +76,11 @@ class Image extends Component {
                 src={imgSrc}
                 loading="lazy"
                 onError={ev => {
-                  console.log("on error");
                   ev.target.src = this.getSrc(
                     Math.floor(Math.random() * 99999)
                   );
                 }}
                 onLoad={ev => {
-                  console.log("on load", ev.target, window.scrollY);
                   this.setState({
                     loaded: true
                   });
@@ -219,7 +217,6 @@ class App extends Component {
                 );
                 requestAnimationFrame(loop);
               } else {
-                console.log("stopped");
                 this.restrictScroll = true;
               }
               frame++;
