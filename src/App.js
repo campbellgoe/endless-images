@@ -199,7 +199,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <header className="App-header">Welcome to Endless</header>
+        <header className="App-header">Welcome to Lorem Image</header>
         <img
           src={caretDownImage}
           alt="go down"
